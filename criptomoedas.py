@@ -31,13 +31,13 @@ class Criptomoedas:
 
             if idx_dia is not None:
                 dados_dia = historico[idx_dia]
-                ganho = dados_dia['close'] - dados_dia['open']
+                ganho = dados_dia['close']/dados_dia['open']
 
                 Criptomoedas.moedas.append(moeda)
                 Criptomoedas.ganhos[moeda] = ganho
 
                 ultimos_10_dias = historico[(idx_dia - 10): idx_dia]
-                valores_10_dias = [(x['close'] - x['open']) for x in ultimos_10_dias]
+                valores_10_dias = [x['open'] for x in ultimos_10_dias]
 
                 numpy_array = numpy.array(valores_10_dias)
                 Criptomoedas.riscos[moeda] = numpy_array.std()

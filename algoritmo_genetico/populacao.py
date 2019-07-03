@@ -43,7 +43,7 @@ class Populacao:
             pai1 = self.populacao[self.roleta()]
             pai2 = self.populacao[self.roleta()]
             filho = pai1.crossover(pai2)
-            filho.mutacao(.05)
+            filho.mutacao(.2)
             nova_populacao.append(filho)
 
         return nova_populacao

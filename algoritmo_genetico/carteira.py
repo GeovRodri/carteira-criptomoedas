@@ -1,4 +1,3 @@
-import math
 import random
 import numpy as np
 from random import randint
@@ -62,11 +61,7 @@ class Carteira:
     def mutacao(self, chance_mutacao):
         for i in range(self.tamanho):
             if random.random() < chance_mutacao:
-                inicio = self.moedas[0:i]
-                fim = self.moedas[i + 1: self.tamanho]
-                nova = self.gerar_moeda_aleatoria()
-
-                self.set_valor(inicio + [nova] + fim)
+                self.moedas[i] = self.gerar_moeda_aleatoria()
 
     def avaliar(self):
         x = self.get_ganho_carteira(True)
