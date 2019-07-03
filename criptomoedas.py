@@ -6,7 +6,7 @@ class Criptomoedas:
 
     moedas = []
     ganhos = {}
-    dps = {}
+    riscos = {}
 
     @staticmethod
     def buscar_moeda(moeda):
@@ -40,4 +40,4 @@ class Criptomoedas:
                 valores_10_dias = [(x['close'] - x['open']) for x in ultimos_10_dias]
 
                 numpy_array = numpy.array(valores_10_dias)
-                Criptomoedas.dps[moeda] = numpy_array.std()
+                Criptomoedas.riscos[moeda] = numpy_array.std()
