@@ -1,16 +1,15 @@
 import random
-import numpy as np
 from random import randint
 from criptomoedas import Criptomoedas
 
 
 class Carteira:
 
-    def __init__(self, tamanho, valor_investimento=1000):
+    def __init__(self, tamanho, pesos=None):
         self.tamanho = tamanho
         self.moedas = []
         self.avaliacao = -1
-        self.pesos = self.gerar_pesos(valor_investimento, tamanho)
+        self.pesos = pesos
 
     def set_valor(self, novo_valor):
         self.moedas = novo_valor
@@ -44,18 +43,23 @@ class Carteira:
             self.moedas.append(moeda)
 
     def crossover(self, outro_cromossomo):
-        split_index = int(random.random() * self.tamanho)
+        novo_valor = []
 
-        if random.random() > .5:
-            novo_valor = self.moedas[0:split_index] + outro_cromossomo.moedas[split_index:len(outro_cromossomo.moedas)]
-            novo_peso = self.pesos[0:split_index] + outro_cromossomo.pesos[split_index:len(outro_cromossomo.pesos)]
-        else:
-            novo_valor = outro_cromossomo.moedas[0:split_index] + self.moedas[split_index:len(outro_cromossomo.moedas)]
-            novo_peso = outro_cromossomo.pesos[0:split_index] + self.pesos[split_index:len(outro_cromossomo.pesos)]
+        for i in range(self.tamanho):
+            if i%2 == 0:
+                if self.moedas[i] not in novo_valor:
+                    novo_valor.append(self.moedas[i])
+                else:
+                    novo_valor.append(outro_cromossomo.moedas[i])
+            else:
+                if outro_cromossomo.moedas[i] not in novo_valor:
+                    novo_valor.append(outro_cromossomo.moedas[i])
+                else:
+                    novo_valor.append(self.moedas[i])
 
         novo_cromossomo = Carteira(self.tamanho)
         novo_cromossomo.set_valor(novo_valor)
-        novo_cromossomo.set_pesos(novo_peso)
+        novo_cromossomo.set_pesos(self.pesos)
         return novo_cromossomo
 
     def mutacao(self, chance_mutacao):
@@ -67,24 +71,6 @@ class Carteira:
         x = self.get_ganho_carteira(True)
         self.avaliacao = x
         return self.avaliacao
-
-    def gerar_pesos(self, valor, tamanho):
-        valor_maximo = valor
-        peso_maximo = valor * 0.2
-        pesos = np.zeros(tamanho)
-        i = 0
-
-        while i != tamanho:
-            valor_aleatorio = randint(0, min(valor_maximo, peso_maximo))
-            pesos[i] = valor_aleatorio
-
-            if i == (tamanho - 1):
-                pesos[i] = valor_maximo
-
-            valor_maximo -= valor_aleatorio
-            i += 1
-
-        return pesos.tolist()
 
     def __repr__(self):
         return "cromossomo:[%s] pesos:[%s] avaliacao[%.2f] valor ganho [%.4f]" \

@@ -1,22 +1,45 @@
-import random
 import time
+import random
+import numpy as np
+from random import randint
 from algoritmo_genetico.carteira import Carteira
 
 
 class Populacao:
 
-    def __init__(self, tamanho_populacao=10, geracoes=1000):
+    def __init__(self, tamanho_populacao=10, geracoes=1000, valor_investimento=1000):
         self.populacao = []
         self.tam_populacao = tamanho_populacao
         self.geracoes = geracoes
         self.soma_avaliacoes = 0
+        self.valor_investimento = valor_investimento
 
     def inicializar_populacao(self):
+        pesos = self.gerar_pesos(self.valor_investimento, self.tam_populacao)
+
         for i in range(self.tam_populacao):
-            self.populacao.append(Carteira(10))
+            self.populacao.append(Carteira(self.tam_populacao, pesos))
 
         for cromossomo in self.populacao:
             cromossomo.inicializar()
+
+    def gerar_pesos(self, valor, tamanho):
+        valor_maximo = valor
+        peso_maximo = valor * 0.2
+        pesos = np.zeros(tamanho)
+        i = 0
+
+        while i != tamanho:
+            valor_aleatorio = randint(0, min(valor_maximo, peso_maximo))
+            pesos[i] = valor_aleatorio
+
+            if i == (tamanho - 1):
+                pesos[i] = valor_maximo
+
+            valor_maximo -= valor_aleatorio
+            i += 1
+
+        return pesos.tolist()
 
     def avaliar_populacao(self):
         self.soma_avaliacoes = 0
@@ -69,4 +92,4 @@ class Populacao:
             self.avaliar_populacao()
             ordenado = sorted(self.populacao, key=lambda x: x.avaliacao, reverse=True)
 
-        print('top 1 -> %s' % (ordenado[1]))
+        print('top 1 -> %s' % (ordenado[0]))
